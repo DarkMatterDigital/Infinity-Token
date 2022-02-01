@@ -1,0 +1,24 @@
+<script>
+        window.onload = (function () {
+            var url = "dataTextFile";
+            function updateInfinityData() {
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", url);
+                xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        infinityData = JSON.parse(xhr.responseText);
+                        document.getElementById("timeElement").innerHTML = infinityData["time"];
+                        document.getElementById("hash24Element").innerHTML = infinityData["24h_avg_hashrate"];
+                        document.getElementById("hash60Element").innerHTML = infinityData["60m_avg_hashrate"];
+                        document.getElementById("hash5Element").innerHTML = infinityData["5m_avg_hashrate"];
+                        document.getElementById("bitcoinBalanceElement").innerHTML = infinityData["btc_balance_rounded"];
+                        document.getElementById("bitcoinTotalElement").innerHTML = infinityData["btc_total_received_rounded"];
+                    }
+                };
+                xhr.send();
+            }
+            updateInfinityData();
+            setInterval(updateInfinityData, 120000);
+        });
+    </script>
