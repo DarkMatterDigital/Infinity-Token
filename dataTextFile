@@ -1,0 +1,60 @@
+<?php
+$url1 = "https://slushpool.com/accounts/profile/json/btc";
+$curl1 = curl_init($url1);
+curl_setopt($curl1, CURLOPT_URL, $url1);
+curl_setopt($curl1, CURLOPT_RETURNTRANSFER, true);
+$headers = array("SlushPool-Auth-Token: QwTBqoCgU059qTfA",);
+curl_setopt($curl1, CURLOPT_HTTPHEADER, $headers);
+curl_setopt($curl1, CURLOPT_SSL_VERIFYHOST, false);
+curl_setopt($curl1, CURLOPT_SSL_VERIFYPEER, false);
+$resp = curl_exec($curl1);
+curl_close($curl1);
+$url2 = "https://slushpool.com/accounts/rewards/json/btc";
+$curl2 = curl_init($url2);
+curl_setopt($curl2, CURLOPT_URL, $url12);
+curl_setopt($curl2, CURLOPT_RETURNTRANSFER, true);
+$headers2 = array("SlushPool-Auth-Token: QwTBqoCgU059qTfA",);
+curl_setopt($curl2, CURLOPT_HTTPHEADER, $headers2);
+curl_setopt($curl2, CURLOPT_SSL_VERIFYHOST, false);
+curl_setopt($curl2, CURLOPT_SSL_VERIFYPEER, false);
+$resp2 = curl_exec($curl2);
+curl_close($curl2);
+$url3 = "https://api.blockcypher.com/v1/btc/main/addrs/bc1qwjk2yer7c2vhfgfvrecng6lfgned0c5lhx67xx";
+$curl3 = curl_init($url3);
+curl_setopt($curl3, CURLOPT_URL, $url3);
+curl_setopt($curl3, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($curl3, CURLOPT_SSL_VERIFYHOST, false);
+curl_setopt($curl3, CURLOPT_SSL_VERIFYPEER, false);
+$resp3 = curl_exec($curl3);
+curl_close($curl3);
+$currentDateTime = date('Y-m-d H:i:s');
+$poolArray = json_decode($resp, true);
+$jHash5 = number_format(floatval($poolArray["btc"]["hash_rate_5m"]/1000),1,".","");
+$jHash60 = number_format(floatval($poolArray["btc"]["hash_rate_60m"]/1000),1,".","");
+$jHash24 = number_format(floatval($poolArray["btc"]["hash_rate_24h"]/1000),1,
+".","");
+$walletArray = json_decode($resp3, true);
+$btcBalanceRounded = number_format(floatval($walletArray["balance"]/100000000),3,
+".","");
+$btcTotalInRounded = number_format(floatval($walletArray["total_received"]/100000000),3,
+".","");
+$itDataFile = fopen("dataTextFile", "w");
+echo fwrite($itDataFile,"{");
+echo fwrite($itDataFile,"\"time\": \"");
+echo fwrite($itDataFile,$currentDateTime);
+echo fwrite($itDataFile,"\", ");
+echo fwrite($itDataFile,"\"5m_avg_hashrate\": \"");
+echo fwrite($itDataFile,$jHash5);
+echo fwrite($itDataFile,"\", \"60m_avg_hashrate\": \"");
+echo fwrite($itDataFile,$jHash60);
+echo fwrite($itDataFile,"\", \"24h_avg_hashrate\": \"");
+echo fwrite($itDataFile,$jHash24);
+echo fwrite($itDataFile,"\", \"btc_wallet_address\": \"");
+echo fwrite($itDataFile,$walletArray["address"]);
+echo fwrite($itDataFile,"\", \"btc_balance_rounded\": \"");
+echo fwrite($itDataFile,$btcBalanceRounded);
+echo fwrite($itDataFile,"\", \"btc_total_received_rounded\": \"");
+echo fwrite($itDataFile,$btcTotalInRounded);
+echo fwrite($itDataFile,"\"}");
+fclose($itDataFile);
+?>
